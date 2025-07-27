@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Artist Portfolio</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-section">
+                <div class="logo-container">
+                    <div class="logo-icon">🧀</div>
+                    <span class="logo-text">CHEDR</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <a href="#docs">Docs</a>
+            </div>
+            <div class="nav-section">
+                <a href="#blog">Blog</a>
+            </div>
+            <div class="nav-section">
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="nav-section">
+                <a href="#client-login">Client Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Vertical Toggle Navbar (top-right) -->
+    <nav class="toggle-nav">
+        <div class="toggle-container">
+            <input type="checkbox" id="toggleInnerCubes" class="toggle-checkbox" checked>
+            <label for="toggleInnerCubes" class="toggle-label">
+                <span class="toggle-switch"></span>
+                Show inner cubes
+            </label>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggleTransparency" class="toggle-checkbox">
+            <label for="toggleTransparency" class="toggle-label">
+                <span class="toggle-switch"></span>
+                Transparent
+            </label>
+        </div>
+        <div class="toggle-container">
+            <label for="influenceSlider" class="toggle-label" style="gap:0.25rem; flex-direction: column; align-items:flex-start;">
+                Influence radius: <span id="influenceValue">100</span>px
+                <input type="range" id="influenceSlider" min="0" max="250" value="100" />
+            </label>
+        </div>
+    </nav>
+
+    <canvas id="threejs-container"></canvas>
+
+    <main>
+        <section id="work">
+            <h2>My Work</h2>
+            <p>Here is some content to make the page scrollable.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
+            <p>Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat.</p>
+            <p>Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede.</p>
+            <p>Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh.</p>
+        </section>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>More content to ensure scrolling is possible.</p>
+        </section>
+        <section id="contact">
+            <h2>Contact</h2>
+            <p>Even more content.</p>
+        </section>
+    </main>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js",
+                "gsap": "https://unpkg.com/gsap@3.12.2/dist/gsap.js"
+            }
+        }
+    </script>
+    <script type="module" src="script.js?v=9"></script>
+</body>
+</html> 

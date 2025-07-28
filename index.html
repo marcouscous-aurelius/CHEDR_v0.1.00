@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>3D Artist Portfolio</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
     <nav class="main-nav">
@@ -31,32 +32,78 @@
         </div>
     </nav>
 
-    <!-- Vertical Toolbox (top-right) -->
-    <nav class="toolbox">
-        <div class="toggle-container">
-            <input type="checkbox" id="toggleInnerCubes" class="toggle-checkbox" checked>
-            <label for="toggleInnerCubes" class="toggle-label">
-                <span class="toggle-switch"></span>
-                Show inner cubes
-            </label>
+    <div id="toolbox-v2" class="toolbox-v2">
+        <div class="toolbox-header">
+            <h3><i class="fas fa-sliders-h"></i> CONTROLS</h3>
+            <button id="toolbox-toggle-btn" class="toolbox-toggle-btn" aria-label="Toggle controls"><i class="fas fa-chevron-up"></i></button>
         </div>
-        <div class="toggle-container">
-            <input type="checkbox" id="toggleTransparency" class="toggle-checkbox">
-            <label for="toggleTransparency" class="toggle-label">
-                <span class="toggle-switch"></span>
-                Transparent
-            </label>
-        </div>
-        <div class="range-slider-container">
-            <label for="influenceSlider" class="range-slider-label">Influence radius: <span id="influenceValue">88</span></label>
-            <div class="range-slider">
-                <div class="ticks"></div>
-                <input type="range" id="influenceSlider" min="60" max="160" value="88">
-                <output for="influenceSlider"></output>
-                <div class="range-slider__progress"></div>
+        <div class="toolbox-content">
+            <div class="toolbox-section">
+                <h4><i class="fas fa-cubes"></i> Display</h4>
+                <div class="control-row">
+                    <label for="toggleInnerCubes-v2"><i class="far fa-eye"></i> Inner Cubes</label>
+                    <input type="checkbox" id="toggleInnerCubes-v2" class="toggle-switch-v2" checked>
+                </div>
+                <!-- New Cube Color Picker -->
+                <div class="control-row color-row">
+                    <label for="cubeColorPicker-v2">Cube Color</label>
+                    <input type="color" id="cubeColorPicker-v2" value="#ffffff">
+                </div>
+                <!-- New Cube Opacity Slider -->
+                <div class="control-row slider-row">
+                    <label for="cubeOpacitySlider-v2"><i class="far fa-eye-slash"></i> Opacity <span id="cubeOpacityValue-v2" class="value-label">[1.00]</span></label>
+                    <input type="range" id="cubeOpacitySlider-v2" class="styled-slider" min="0" max="1" step="0.01" value="1">
+                </div>
+            </div>
+            <div class="toolbox-section">
+                <h4><i class="fas fa-mouse-pointer"></i> Interaction</h4>
+                <div class="control-row slider-row">
+                    <label for="influenceSlider-v2"><i class="fas fa-circle-notch"></i> Influence <span id="influenceValue-v2" class="value-label">[88]</span></label>
+                    <input type="range" id="influenceSlider-v2" class="styled-slider" min="60" max="160" value="88">
+                </div>
+                <div class="control-row spline-row">
+                    <label><i class="fas fa-chart-line"></i> Falloff Curve</label>
+                    <div class="spline-container">
+                        <canvas id="falloffSpline" class="spline-canvas"></canvas>
+                        <div class="spline-controls">
+                            <button id="resetSplineBtn" class="spline-btn" title="Reset to Linear"><i class="fas fa-undo"></i></button>
+                            <button id="easeInBtn" class="spline-btn" title="Ease In"><i class="fas fa-arrow-right"></i></button>
+                            <button id="easeOutBtn" class="spline-btn" title="Ease Out"><i class="fas fa-arrow-left"></i></button>
+                            <button id="exponentialBtn" class="spline-btn" title="Exponential"><i class="fas fa-chart-line"></i></button>
+                            <button id="bezierBtn" class="spline-btn" title="Bezier Curve"><i class="fas fa-bezier-curve"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="toolbox-section">
+                <h4><i class="fas fa-cloud"></i> Environment</h4>
+                <div class="control-row">
+                    <label for="toggleFog-v2"><i class="fas fa-smog"></i> Fog</label>
+                    <input type="checkbox" id="toggleFog-v2" class="toggle-switch-v2" checked>
+                </div>
+                <div class="control-row slider-row">
+                    <label for="fogNearSlider-v2"><i class="fas fa-ruler-horizontal"></i> Near <span id="fogNearValue-v2" class="value-label">[20]</span></label>
+                    <input type="range" id="fogNearSlider-v2" class="styled-slider" min="1" max="50" value="20">
+                </div>
+                <div class="control-row slider-row">
+                    <label for="fogFarSlider-v2"><i class="fas fa-ruler-horizontal"></i> Far <span id="fogFarValue-v2" class="value-label">[60]</span></label>
+                    <input type="range" id="fogFarSlider-v2" class="styled-slider" min="2" max="150" value="60">
+                </div>
+                <div class="control-row color-row">
+                    <label for="fogColorPicker-v2"><i class="fas fa-palette"></i> Fog Color</label>
+                    <input type="color" id="fogColorPicker-v2" value="#fafafa">
+                </div>
+                <div class="control-row color-row">
+                    <label for="bgColorPicker-v2"><i class="fas fa-fill-drip"></i> BG Color</label>
+                    <input type="color" id="bgColorPicker-v2" value="#fafafa">
+                </div>
+            </div>
+            <div class="toolbox-actions-v2">
+                <button id="setSettingsBtn-v2" class="toolbox-btn-v2"><i class="fas fa-save"></i> SET</button>
+                <button id="resetSettingsBtn-v2" class="toolbox-btn-v2"><i class="fas fa-undo"></i> RESET</button>
             </div>
         </div>
-    </nav>
+    </div>
 
     <canvas id="threejs-container"></canvas>
 
@@ -88,6 +135,6 @@
             }
         }
     </script>
-    <script type="module" src="script.js?v=17"></script>
+    <script type="module" src="script.js?v=18"></script>
 </body>
 </html> 

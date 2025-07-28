@@ -19,6 +19,16 @@ const mouse = {
     isInWindow: false
 };
 
+// Touch state tracking
+const touchState = {
+    isTouching: false,
+    lastTouchX: 0,
+    lastTouchY: 0,
+    touchStartX: 0,
+    touchStartY: 0,
+    touchStartTime: 0
+};
+
 // Track mouse movement
 window.addEventListener('mousemove', (event) => {
     mouse.target.x = (event.clientX / window.innerWidth - 0.5) * 2;  // -1 to 1
@@ -35,6 +45,73 @@ window.addEventListener('mouseout', () => {
 window.addEventListener('mouseover', () => {
     mouse.isInWindow = true;
 });
+
+// Touch event handlers for 3D scene
+const canvas = document.querySelector('#threejs-container');
+
+// Prevent default touch behavior on canvas to avoid scrolling
+canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    touchState.isTouching = true;
+    touchState.lastTouchX = touch.clientX;
+    touchState.lastTouchY = touch.clientY;
+    touchState.touchStartX = touch.clientX;
+    touchState.touchStartY = touch.clientY;
+    touchState.touchStartTime = Date.now();
+    
+    // Update mouse position for 3D interaction
+    mouse.target.x = (touch.clientX / window.innerWidth - 0.5) * 2;
+    mouse.target.y = (touch.clientY / window.innerHeight - 0.5) * 2;
+    mouse.isInWindow = true;
+    
+    // Update pointer for raycasting
+    pointer.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    pointerPixel.x = touch.clientX;
+    pointerPixel.y = touch.clientY;
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    
+    // Update mouse position for camera movement
+    mouse.target.x = (touch.clientX / window.innerWidth - 0.5) * 2;
+    mouse.target.y = (touch.clientY / window.innerHeight - 0.5) * 2;
+    
+    // Update pointer for raycasting
+    pointer.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    pointerPixel.x = touch.clientX;
+    pointerPixel.y = touch.clientY;
+    
+    touchState.lastTouchX = touch.clientX;
+    touchState.lastTouchY = touch.clientY;
+}, { passive: false });
+
+canvas.addEventListener('touchend', (event) => {
+    event.preventDefault();
+    touchState.isTouching = false;
+    
+    // Check if this was a tap (short duration, small movement)
+    const touchDuration = Date.now() - touchState.touchStartTime;
+    const touchDistance = Math.sqrt(
+        Math.pow(touchState.lastTouchX - touchState.touchStartX, 2) +
+        Math.pow(touchState.lastTouchY - touchState.touchStartY, 2)
+    );
+    
+    // If it was a tap and not a drag, we could add tap functionality here
+    if (touchDuration < 300 && touchDistance < 10) {
+        // This was a tap - could add tap-to-focus or other tap interactions
+    }
+}, { passive: false });
+
+// Prevent touch events from bubbling up to parent elements
+canvas.addEventListener('touchcancel', (event) => {
+    event.preventDefault();
+    touchState.isTouching = false;
+}, { passive: false });
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -141,7 +218,7 @@ raycaster.params.Mesh.threshold = 0;
 const pointer = new THREE.Vector2();
 const pointerPixel = { x: -10000, y: -10000 };
 let originalPositions = new Map();
-const cubeAnimations = new Map();
+// const cubeAnimations = new Map(); // Removed unused variable
 
 // Animation configuration
 const ANIMATION_CONFIG = {
@@ -176,12 +253,12 @@ for (let x = 0; x < gridSize; x++) {
             originalPositions.set(cube, cube.position.clone());
             // Add grid position for collision detection
             cube.gridPosition = { x, y, z };
-            // Initialize animation data
-            cubeAnimations.set(cube, {
-                isExtended: false,
-                isReturning: false,
-                targetPosition: cube.position.clone()
-            });
+            // Unused animation data removed
+            // cubeAnimations.set(cube, {
+            //     isExtended: false,
+            //     isReturning: false,
+            //     targetPosition: cube.position.clone()
+            // });
             cubeGroup.add(cube);
 
             // Create invisible hitbox at the original position
@@ -246,16 +323,49 @@ if (toggleTransparencyEl) {
     toggleTransparencyEl.addEventListener('change', updateTransparency);
 }
 
+// Add js class to enable dynamic features
+document.documentElement.classList.add('js');
+
 // ===============================
 // Slider: Influence Radius
 // ===============================
 const influenceSliderEl = document.getElementById('influenceSlider');
-const influenceValueEl = document.getElementById('influenceValue');
 if (influenceSliderEl) {
+    const rangeSlider = influenceSliderEl.closest('.range-slider');
+    const output = rangeSlider.querySelector('output');
+
     const updateInfluence = () => {
-        influenceRadius = parseInt(influenceSliderEl.value, 10);
-        if (influenceValueEl) influenceValueEl.textContent = influenceRadius;
+        const value = parseInt(influenceSliderEl.value, 10);
+        influenceRadius = value;
+        
+        // Calculate percentage position for the fill bar
+        const min = parseInt(influenceSliderEl.min, 10);
+        const max = parseInt(influenceSliderEl.max, 10);
+        const percent = ((value - min) / (max - min)) * 100;
+
+        // Update CSS custom property to drive the filled part of the slider
+        rangeSlider.style.setProperty('--range-progress', `${percent}%`);
+        
+        // Update the label text with current value
+        const influenceValue = document.getElementById('influenceValue');
+        if (influenceValue) {
+            influenceValue.textContent = value;
+        }
+        
+        // Update output tooltip
+        if (output) {
+            output.textContent = value;
+        }
     };
+
+    // Add hover effect
+    influenceSliderEl.addEventListener('mouseenter', () => {
+        rangeSlider.classList.add('slider-hover');
+    });
+    
+    influenceSliderEl.addEventListener('mouseleave', () => {
+        rangeSlider.classList.remove('slider-hover');
+    });
 
     updateInfluence();
     influenceSliderEl.addEventListener('input', updateInfluence);
@@ -267,6 +377,23 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.minDistance = 8;
 controls.maxDistance = 40;
+
+// Enable touch controls for mobile devices
+controls.enablePan = true;
+controls.enableZoom = true;
+controls.enableRotate = true;
+
+// Adjust touch sensitivity for better mobile experience
+controls.touches = {
+    ONE: THREE.TOUCH.ROTATE,
+    TWO: THREE.TOUCH.DOLLY_PAN
+};
+
+// Increase damping for smoother touch interaction
+controls.dampingFactor = 0.1;
+controls.rotateSpeed = 0.8;
+controls.zoomSpeed = 0.8;
+controls.panSpeed = 0.8;
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -376,4 +503,291 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-animate(); 
+animate();
+
+// ===============================
+// Draggable toolbox with reset
+// ===============================
+const toolboxEl = document.querySelector('.toolbox');
+if (toolboxEl) {
+    // Capture original metrics once (after styles have applied)
+    const originalRect = toolboxEl.getBoundingClientRect();
+    const originalState = {
+        top: originalRect.top,
+        left: originalRect.left,
+        width: originalRect.width
+    };
+
+    let isDragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    
+    // Smooth dragging variables
+    let currentLeft = originalRect.left;
+    let currentTop = originalRect.top;
+    let targetLeft = originalRect.left;
+    let targetTop = originalRect.top;
+    const dragEase = 0.15; // Controls the delay - lower = more delay
+    
+    // Momentum/flick variables
+    let velocityX = 0;
+    let velocityY = 0;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    let lastTime = 0;
+    const friction = 0.95; // How quickly momentum decays
+    const maxVelocity = 50; // Maximum velocity to prevent excessive speed
+
+    const isResizeHandle = (e) => {
+        const rect = toolboxEl.getBoundingClientRect();
+        const offsetRight = rect.right - e.clientX;
+        const offsetBottom = rect.bottom - e.clientY;
+        // Same 16 px corner allowance as native resize cursor
+        return offsetRight <= 16 && offsetBottom <= 16;
+    };
+
+    toolboxEl.addEventListener('mousedown', (e) => {
+        if (e.target.closest('input, label')) return; // do not start drag on UI controls
+        if (isResizeHandle(e)) return;               // let native corner resize work
+
+        isDragging = true;
+        const rect = toolboxEl.getBoundingClientRect();
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+        
+        // Update current position to match actual position
+        currentLeft = rect.left;
+        currentTop = rect.top;
+        targetLeft = rect.left;
+        targetTop = rect.top;
+        
+        // Reset momentum when starting new drag
+        velocityX = 0;
+        velocityY = 0;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        lastTime = Date.now();
+
+        // Switch anchoring to left/top for free movement
+        toolboxEl.style.right = 'auto';
+        toolboxEl.style.left = `${rect.left}px`;
+        toolboxEl.style.top = `${rect.top}px`;
+        document.body.style.userSelect = 'none';
+    });
+
+    // Touch event handlers for toolbox dragging
+    toolboxEl.addEventListener('touchstart', (e) => {
+        if (e.target.closest('input, label')) return; // do not start drag on UI controls
+        
+        const touch = e.touches[0];
+        const rect = toolboxEl.getBoundingClientRect();
+        
+        // Check if touch is in resize handle area
+        const offsetRight = rect.right - touch.clientX;
+        const offsetBottom = rect.bottom - touch.clientY;
+        if (offsetRight <= 16 && offsetBottom <= 16) return; // let native resize work
+        
+        e.preventDefault(); // Prevent default touch behavior
+        
+        isDragging = true;
+        dragOffsetX = touch.clientX - rect.left;
+        dragOffsetY = touch.clientY - rect.top;
+        
+        // Update current position to match actual position
+        currentLeft = rect.left;
+        currentTop = rect.top;
+        targetLeft = rect.left;
+        targetTop = rect.top;
+        
+        // Reset momentum when starting new drag
+        velocityX = 0;
+        velocityY = 0;
+        lastMouseX = touch.clientX;
+        lastMouseY = touch.clientY;
+        lastTime = Date.now();
+
+        // Switch anchoring to left/top for free movement
+        toolboxEl.style.right = 'auto';
+        toolboxEl.style.left = `${rect.left}px`;
+        toolboxEl.style.top = `${rect.top}px`;
+        document.body.style.userSelect = 'none';
+    }, { passive: false });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        // Calculate velocity for momentum
+        const currentTime = Date.now();
+        const deltaTime = currentTime - lastTime;
+        if (deltaTime > 0) {
+            const deltaX = e.clientX - lastMouseX;
+            const deltaY = e.clientY - lastMouseY;
+            velocityX = (deltaX / deltaTime) * 16; // Scale for smooth motion
+            velocityY = (deltaY / deltaTime) * 16;
+            
+            // Clamp velocity to prevent excessive speed
+            velocityX = Math.max(-maxVelocity, Math.min(maxVelocity, velocityX));
+            velocityY = Math.max(-maxVelocity, Math.min(maxVelocity, velocityY));
+        }
+        
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        lastTime = currentTime;
+        
+        // Update target position
+        targetLeft = e.clientX - dragOffsetX;
+        targetTop = e.clientY - dragOffsetY;
+    });
+
+    // Touch move handler for toolbox
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const touch = e.touches[0];
+        
+        // Calculate velocity for momentum
+        const currentTime = Date.now();
+        const deltaTime = currentTime - lastTime;
+        if (deltaTime > 0) {
+            const deltaX = touch.clientX - lastMouseX;
+            const deltaY = touch.clientY - lastMouseY;
+            velocityX = (deltaX / deltaTime) * 16; // Scale for smooth motion
+            velocityY = (deltaY / deltaTime) * 16;
+            
+            // Clamp velocity to prevent excessive speed
+            velocityX = Math.max(-maxVelocity, Math.min(maxVelocity, velocityX));
+            velocityY = Math.max(-maxVelocity, Math.min(maxVelocity, velocityY));
+        }
+        
+        lastMouseX = touch.clientX;
+        lastMouseY = touch.clientY;
+        lastTime = currentTime;
+        
+        // Update target position
+        targetLeft = touch.clientX - dragOffsetX;
+        targetTop = touch.clientY - dragOffsetY;
+    }, { passive: false });
+
+    const stopDrag = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        document.body.style.userSelect = '';
+        // Keep the momentum going after release
+    };
+
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('mouseleave', stopDrag);
+    document.addEventListener('touchend', stopDrag);
+    document.addEventListener('touchcancel', stopDrag);
+
+    // Smooth dragging animation with momentum
+    function updateToolboxPosition() {
+        if (isDragging) {
+            // Smoothly interpolate current position towards target
+            currentLeft += (targetLeft - currentLeft) * dragEase;
+            currentTop += (targetTop - currentTop) * dragEase;
+        } else {
+            // Apply momentum when not dragging
+            if (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1) {
+                currentLeft += velocityX;
+                currentTop += velocityY;
+                
+                // Apply friction to slow down momentum
+                velocityX *= friction;
+                velocityY *= friction;
+                
+                // Stop very small velocities
+                if (Math.abs(velocityX) < 0.1) velocityX = 0;
+                if (Math.abs(velocityY) < 0.1) velocityY = 0;
+            }
+        }
+        
+        // Apply the position
+        toolboxEl.style.left = `${currentLeft}px`;
+        toolboxEl.style.top = `${currentTop}px`;
+        
+        requestAnimationFrame(updateToolboxPosition);
+    }
+    updateToolboxPosition();
+
+    // Double-click to reset size & position (with smooth animation)
+    toolboxEl.addEventListener('dblclick', (e) => {
+        if (e.target.closest('input, label')) return; // ignore if dbl-clicking controls
+
+        // Enable transition for smooth return
+        toolboxEl.style.transition = 'left 0.45s cubic-bezier(0.22, 1, 0.36, 1), top 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
+
+        // Restore width
+        toolboxEl.style.width = `${originalState.width}px`;
+        // Restore position
+        toolboxEl.style.left = `${originalState.left}px`;
+        toolboxEl.style.top = `${originalState.top}px`;
+        
+        // Update current and target positions to match reset
+        currentLeft = originalState.left;
+        currentTop = originalState.top;
+        targetLeft = originalState.left;
+        targetTop = originalState.top;
+        
+        // Reset momentum when resetting position
+        velocityX = 0;
+        velocityY = 0;
+
+        // After transition, clean up and re-anchor to right to stay fixed on resize
+        const handleTransitionEnd = () => {
+            toolboxEl.style.transition = '';
+            toolboxEl.style.right = '20px';
+            toolboxEl.style.left = 'auto';
+            // Leave width fixed so user sees the intended size; they can still resize later.
+            toolboxEl.removeEventListener('transitionend', handleTransitionEnd);
+        };
+        toolboxEl.addEventListener('transitionend', handleTransitionEnd);
+    });
+
+    // Double-tap to reset size & position (touch equivalent of double-click)
+    let lastTapTime = 0;
+    toolboxEl.addEventListener('touchend', (e) => {
+        if (e.target.closest('input, label')) return; // ignore if tapping controls
+        
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        
+        if (tapLength < 500 && tapLength > 0) {
+            // Double-tap detected
+            e.preventDefault();
+            
+            // Enable transition for smooth return
+            toolboxEl.style.transition = 'left 0.45s cubic-bezier(0.22, 1, 0.36, 1), top 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
+
+            // Restore width
+            toolboxEl.style.width = `${originalState.width}px`;
+            // Restore position
+            toolboxEl.style.left = `${originalState.left}px`;
+            toolboxEl.style.top = `${originalState.top}px`;
+            
+            // Update current and target positions to match reset
+            currentLeft = originalState.left;
+            currentTop = originalState.top;
+            targetLeft = originalState.left;
+            targetTop = originalState.top;
+            
+            // Reset momentum when resetting position
+            velocityX = 0;
+            velocityY = 0;
+
+            // After transition, clean up and re-anchor to right to stay fixed on resize
+            const handleTransitionEnd = () => {
+                toolboxEl.style.transition = '';
+                toolboxEl.style.right = '20px';
+                toolboxEl.style.left = 'auto';
+                // Leave width fixed so user sees the intended size; they can still resize later.
+                toolboxEl.removeEventListener('transitionend', handleTransitionEnd);
+            };
+            toolboxEl.addEventListener('transitionend', handleTransitionEnd);
+            
+            lastTapTime = 0; // Reset to prevent triple-tap
+        } else {
+            lastTapTime = currentTime;
+        }
+    }, { passive: false });
+} 

@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>3D Artist Portfolio</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
     <nav class="main-nav">
@@ -31,8 +31,8 @@
         </div>
     </nav>
 
-    <!-- Vertical Toggle Navbar (top-right) -->
-    <nav class="toggle-nav">
+    <!-- Vertical Toolbox (top-right) -->
+    <nav class="toolbox">
         <div class="toggle-container">
             <input type="checkbox" id="toggleInnerCubes" class="toggle-checkbox" checked>
             <label for="toggleInnerCubes" class="toggle-label">
@@ -47,11 +47,14 @@
                 Transparent
             </label>
         </div>
-        <div class="toggle-container">
-            <label for="influenceSlider" class="toggle-label" style="gap:0.25rem; flex-direction: column; align-items:flex-start;">
-                Influence radius: <span id="influenceValue">100</span>px
-                <input type="range" id="influenceSlider" min="0" max="250" value="100" />
-            </label>
+        <div class="range-slider-container">
+            <label for="influenceSlider" class="range-slider-label">Influence radius: <span id="influenceValue">88</span></label>
+            <div class="range-slider">
+                <div class="ticks"></div>
+                <input type="range" id="influenceSlider" min="60" max="160" value="88">
+                <output for="influenceSlider"></output>
+                <div class="range-slider__progress"></div>
+            </div>
         </div>
     </nav>
 
@@ -81,11 +84,10 @@
             "imports": {
                 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
                 "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-                "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js",
-                "gsap": "https://unpkg.com/gsap@3.12.2/dist/gsap.js"
+                "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js"
             }
         }
     </script>
-    <script type="module" src="script.js?v=9"></script>
+    <script type="module" src="script.js?v=17"></script>
 </body>
 </html> 

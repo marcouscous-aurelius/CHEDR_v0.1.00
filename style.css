@@ -23,12 +23,13 @@ body {
 
 .nav-container {
     display: flex;
-    background-color: #ffffff;
-    border-radius: 50px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
+    border: 1px solid #ddd;                    /* light grey border */
+    border-radius: 12px;                       /* more pronounced rounding */
     padding: 0;
     overflow: hidden;
     position: relative;
+    backdrop-filter: blur(10px);
 }
 
 .nav-section {
@@ -101,6 +102,15 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: -1;
+    /* Touch improvements for mobile */
+    touch-action: none; /* Prevents default touch behaviors like scrolling */
+    -webkit-touch-callout: none; /* Prevents callout on iOS */
+    -webkit-user-select: none; /* Prevents text selection on iOS */
+    -khtml-user-select: none; /* Prevents text selection on Konqueror */
+    -moz-user-select: none; /* Prevents text selection on Firefox */
+    -ms-user-select: none; /* Prevents text selection on IE/Edge */
+    user-select: none; /* Prevents text selection */
+    -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
 }
 
 main {
@@ -145,10 +155,11 @@ h2 {
 .toggle-switch {
     width: 40px;
     height: 20px;
-    background-color: #ccc;
+    background-color: #bdbdbd; /* Dark shadow color for off state */
     border-radius: 20px;
     position: relative;
     transition: background-color 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .toggle-switch::after {
@@ -161,36 +172,205 @@ h2 {
     top: 2px;
     left: 2px;
     transition: transform 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .toggle-checkbox:checked + .toggle-label .toggle-switch {
-    background-color: #4caf50;
+    background-color: #ffd700; /* Cheese yellow for on state */
+    box-shadow: inset 0 2px 4px rgba(255, 215, 0, 0.3);
 }
 
 .toggle-checkbox:checked + .toggle-label .toggle-switch::after {
     transform: translateX(20px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 } 
 
-.toggle-container input[type="range"] {
+/* === Range Slider Container === */
+.range-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     width: 100%;
 }
 
-/* Vertical toggle navbar */
-.toggle-nav {
+.range-slider-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #333; 
+    user-select: none;
+}
+
+/* Toolbox positioning and styling (mirrors nav-container) */
+.toolbox {
     position: fixed;
-    top: 20vh;           /* 20% below viewport top */
-    right: 5%;           /* 5% from right side */
-    left: auto;          /* override main nav left */
-    width: auto;         /* shrink to content */
+    top: 20px;   /* align with nav bar offset */
+    right: 20px; /* snug to the right edge with same margin */
+    left: auto;
+    width: auto; /* shrink-wrap but within max */
+    /* Allow resizing both larger and smaller (bounded only by viewport minus margins) */
+    max-width: calc(100vw - 40px); /* keep 20px margin on each side */
+    min-width: 200px;
     padding: 0.75rem 1rem;
-    background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
-    border: 1px solid #ddd;                    /* light grey border */
-    border-radius: 12px;                       /* more pronounced rounding */
-    align-items: flex-start;                   /* left align internal items */
-    backdrop-filter: blur(10px);
+    border-radius: 12px;                       /* consistent rounding */
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     z-index: 20;
+    background-color: rgba(255, 255, 255, 0.5); /* translucent white */
+    border: 1px solid #ddd;                    /* light grey border */
+    overflow: auto;                 /* enable resize handle */
+    resize: horizontal;             /* allow width resizing only */
+    /* cursor left default so se-resize shows on handle */
+    backdrop-filter: blur(10px);               /* frosted glass effect */
+} 
+
+/* Adjusted range-slider container – remove z-index override */
+.toolbox .range-slider {
+  --input-p: 0.375em;
+  --input-h: 2.25em;
+  --input-r: calc(0.5 * var(--input-h));
+  --track-r: calc(var(--input-r) - var(--input-p));
+  --track-h: calc(2 * var(--track-r));
+  --thumb-d: var(--input-h);
+  --thumb-r: calc(0.5 * var(--thumb-d));
+  position: relative;
+  /* Let the slider grow to container width */
+  --input-w: 100%;
+  width: 100%;
+  height: var(--input-h);
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0 auto;
+  /* No z-index so the stacking context is natural (0) */
+}
+
+
+
+
+
+/* Ensure the range input itself sits above the fill */
+.toolbox .range-slider input[type='range'] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--input-h);
+  border-radius: var(--input-h);
+  background: linear-gradient(180deg, #a6a6a6 0%, #f0f0f0 100%);
+  box-shadow: 
+    0 -0.5px 0 #a1a1a1,
+    0 0.5px 0 #ffffff;
+  cursor: pointer;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2; /* above fill */
+  border: none;
+}
+
+.toolbox .range-slider input[type='range']::-webkit-slider-runnable-track {
+  margin: var(--input-p);
+  height: var(--track-h);
+  border-radius: var(--track-r);
+  background: 
+    linear-gradient(to right, 
+      #ffd700 0%, 
+      #ffd700 var(--range-progress, 50%), 
+      #d0d0d0 var(--range-progress, 50%), 
+      #d0d0d0 100%
+    );
+  box-shadow: 
+    inset 0 1.5px 3px #808080,
+    inset 0 -0.5px 1px #e0e0e0;
+  border: none;
+  position: relative;
+  z-index: 2;
+}
+
+.toolbox .range-slider input[type='range']::-moz-range-track {
+  margin: var(--input-p);
+  height: var(--track-h);
+  border-radius: var(--track-r);
+  background: 
+    linear-gradient(to right, 
+      #ffd700 0%, 
+      #ffd700 var(--range-progress, 50%), 
+      #d0d0d0 var(--range-progress, 50%), 
+      #d0d0d0 100%
+    );
+  box-shadow: 
+    inset 0 1.5px 3px #808080,
+    inset 0 -0.5px 1px #e0e0e0;
+  border: none;
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure thumbs stay on top */
+.toolbox .range-slider input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  border: solid var(--input-p) transparent;
+  width: var(--thumb-d);
+  height: var(--thumb-d);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px #7d7d7d;
+  background:
+    linear-gradient(#c5c5c5, whitesmoke) padding-box,
+    linear-gradient(#fbfbfb, #c2c2c2) border-box;
+  cursor: ew-resize;
+  margin-top: calc(0.5 * (var(--track-h) - var(--thumb-d)));
+  position: relative;
+  z-index: 4; /* elevate above track background but below thumb */
+}
+
+.toolbox .range-slider input[type='range']:focus::-webkit-slider-thumb {
+  outline: none;
+}
+
+.toolbox .range-slider input[type='range']::-moz-range-thumb {
+  box-sizing: border-box;
+  border: solid var(--input-p) transparent;
+  width: var(--thumb-d);
+  height: var(--thumb-d);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px #7d7d7d;
+  background:
+    linear-gradient(#c5c5c5, whitesmoke) padding-box,
+    linear-gradient(#fbfbfb, #c2c2c2) border-box;
+  cursor: ew-resize;
+  position: relative;
+  z-index: 3;
+}
+
+.toolbox .range-slider input[type='range']:focus {
+  outline: none;
+}
+
+.toolbox .range-slider input[type='range']::-ms-fill-lower {
+  background: #ffd700;
+  border-radius: var(--track-r);
+  border: none;
+}
+
+.toolbox .range-slider input[type='range']::-ms-fill-upper {
+  background: #d0d0d0;
+  border-radius: var(--track-r);
+  box-shadow: 
+    inset 0 1.5px 3px #808080,
+    inset 0 -0.5px 1px #e0e0e0;
+  border: none;
+}
+
+.toolbox .range-slider .min-label,
+.toolbox .range-slider .max-label {
+  display: none;
+}
+
+.toolbox .range-slider .ticks,
+.toolbox .range-slider output,
+.toolbox .range-slider__progress {
+  display: none;
 } 

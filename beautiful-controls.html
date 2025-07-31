@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Controls Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section h2 {
+            color: #34495e;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 400;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .control-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .control-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .control-item h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .control-item p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Slider Styles */
+        .slider-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Slider 1: Modern Blue */
+        .slider-1 {
+            background: linear-gradient(90deg, #e3f2fd 0%, #2196f3 50%, #1976d2 100%);
+        }
+
+        .slider-1::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2196f3;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Slider 2: Gradient Rainbow */
+        .slider-2 {
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+        }
+
+        .slider-2::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Slider 3: Glass Effect */
+        .slider-3 {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slider-3::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Slider 4: Neon Glow */
+        .slider-4 {
+            background: #2c3e50;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-4::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #00ff88;
+            cursor: pointer;
+            box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+        }
+
+        /* Slider 5: Material Design */
+        .slider-5 {
+            background: #e0e0e0;
+        }
+
+        .slider-5::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ff5722;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Slider 6: Dark Theme */
+        .slider-6 {
+            background: #424242;
+        }
+
+        .slider-6::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #9c27b0;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(156, 39, 176, 0.4);
+        }
+
+        /* Slider 7: Minimalist */
+        .slider-7 {
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+        }
+
+        .slider-7::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #333;
+            cursor: pointer;
+        }
+
+        /* Slider 8: Ocean Wave */
+        .slider-8 {
+            background: linear-gradient(90deg, #e3f2fd 0%, #64b5f6 50%, #1976d2 100%);
+        }
+
+        .slider-8::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #0288d1, #0277bd);
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(2, 136, 209, 0.4);
+        }
+
+        /* Slider 9: Sunset */
+        .slider-9 {
+            background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+        }
+
+        .slider-9::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Slider 10: Tech */
+        .slider-10 {
+            background: #1a1a1a;
+            border: 1px solid #333;
+        }
+
+        .slider-10::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            cursor: pointer;
+            box-shadow: 0 0 15px #00d4ff;
+        }
+
+        /* Toggle Styles */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle::before {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .toggle.active::before {
+            transform: translateX(30px);
+        }
+
+        /* Toggle 1: Blue */
+        .toggle-1 {
+            background: #ccc;
+        }
+
+        .toggle-1.active {
+            background: #2196f3;
+        }
+
+        /* Toggle 2: Purple */
+        .toggle-2 {
+            background: #e0e0e0;
+        }
+
+        .toggle-2.active {
+            background: #9c27b0;
+        }
+
+        /* Toggle 3: Green */
+        .toggle-3 {
+            background: #f5f5f5;
+        }
+
+        .toggle-3.active {
+            background: #4caf50;
+        }
+
+        /* Toggle 4: Orange */
+        .toggle-4 {
+            background: #ddd;
+        }
+
+        .toggle-4.active {
+            background: #ff9800;
+        }
+
+        /* Toggle 5: Red */
+        .toggle-5 {
+            background: #e0e0e0;
+        }
+
+        .toggle-5.active {
+            background: #f44336;
+        }
+
+        /* Toggle 6: Teal */
+        .toggle-6 {
+            background: #f0f0f0;
+        }
+
+        .toggle-6.active {
+            background: #009688;
+        }
+
+        /* Toggle 7: Pink */
+        .toggle-7 {
+            background: #e8e8e8;
+        }
+
+        .toggle-7.active {
+            background: #e91e63;
+        }
+
+        /* Toggle 8: Indigo */
+        .toggle-8 {
+            background: #f5f5f5;
+        }
+
+        .toggle-8.active {
+            background: #3f51b5;
+        }
+
+        /* Toggle 9: Amber */
+        .toggle-9 {
+            background: #e0e0e0;
+        }
+
+        .toggle-9.active {
+            background: #ffc107;
+        }
+
+        /* Toggle 10: Cyan */
+        .toggle-10 {
+            background: #f0f0f0;
+        }
+
+        .toggle-10.active {
+            background: #00bcd4;
+        }
+
+        /* Color Picker Styles */
+        .color-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .color-picker:hover {
+            transform: scale(1.1);
+        }
+
+        /* Color Picker 1: Rounded */
+        .color-picker-1 {
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Color Picker 2: Square with shadow */
+        .color-picker-2 {
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Color Picker 3: Hexagon */
+        .color-picker-3 {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+
+        /* Color Picker 4: Diamond */
+        .color-picker-4 {
+            transform: rotate(45deg);
+            border-radius: 8px;
+        }
+
+        /* Color Picker 5: Rounded corners */
+        .color-picker-5 {
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Color Picker 6: Circle with border */
+        .color-picker-6 {
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Color Picker 7: Square with gradient border */
+        .color-picker-7 {
+            border-radius: 10px;
+            border: 3px solid transparent;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4) padding-box;
+        }
+
+        /* Color Picker 8: Triangle */
+        .color-picker-8 {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        /* Color Picker 9: Star */
+        .color-picker-9 {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        /* Color Picker 10: Heart */
+        .color-picker-10 {
+            clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+        }
+
+        .value-display {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Beautiful Controls Collection</h1>
+        
+        <!-- Sliders Section -->
+        <div class="section">
+            <h2>🎚️ Sliders</h2>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <h3>Modern Blue</h3>
+                    <p>Clean gradient with smooth thumb</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-1" min="0" max="100" value="50">
+                        <div class="value-display">50</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Rainbow Gradient</h3>
+                    <p>Vibrant multi-color gradient</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-2" min="0" max="100" value="75">
+                        <div class="value-display">75</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Glass Effect</h3>
+                    <p>Frosted glass appearance</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-3" min="0" max="100" value="25">
+                        <div class="value-display">25</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Neon Glow</h3>
+                    <p>Cyberpunk style with glow effect</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-4" min="0" max="100" value="60">
+                        <div class="value-display">60</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Material Design</h3>
+                    <p>Google Material Design style</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-5" min="0" max="100" value="40">
+                        <div class="value-display">40</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Dark Theme</h3>
+                    <p>Elegant dark appearance</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-6" min="0" max="100" value="80">
+                        <div class="value-display">80</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Minimalist</h3>
+                    <p>Simple and clean design</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-7" min="0" max="100" value="35">
+                        <div class="value-display">35</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Ocean Wave</h3>
+                    <p>Deep blue ocean gradient</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-8" min="0" max="100" value="65">
+                        <div class="value-display">65</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Sunset</h3>
+                    <p>Warm sunset colors</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-9" min="0" max="100" value="45">
+                        <div class="value-display">45</div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Tech</h3>
+                    <p>Futuristic tech style</p>
+                    <div class="slider-container">
+                        <input type="range" class="slider slider-10" min="0" max="100" value="90">
+                        <div class="value-display">90</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggles Section -->
+        <div class="section">
+            <h2>🔘 Toggles</h2>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <h3>Blue Toggle</h3>
+                    <p>Classic blue switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-1" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Purple Toggle</h3>
+                    <p>Elegant purple switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-2" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Green Toggle</h3>
+                    <p>Fresh green switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-3" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Orange Toggle</h3>
+                    <p>Warm orange switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-4" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Red Toggle</h3>
+                    <p>Bold red switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-5" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Teal Toggle</h3>
+                    <p>Calming teal switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-6" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Pink Toggle</h3>
+                    <p>Playful pink switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-7" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Indigo Toggle</h3>
+                    <p>Deep indigo switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-8" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Amber Toggle</h3>
+                    <p>Golden amber switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-9" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Cyan Toggle</h3>
+                    <p>Bright cyan switch</p>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Toggle State</span>
+                        <div class="toggle toggle-10" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Pickers Section -->
+        <div class="section">
+            <h2>🎨 Color Pickers</h2>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <h3>Rounded Circle</h3>
+                    <p>Classic circular design</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-1" value="#ff6b6b">
+                        <span class="toggle-label">#ff6b6b</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Square Shadow</h3>
+                    <p>Modern square with shadow</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-2" value="#4ecdc4">
+                        <span class="toggle-label">#4ecdc4</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Hexagon</h3>
+                    <p>Unique hexagonal shape</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-3" value="#45b7d1">
+                        <span class="toggle-label">#45b7d1</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Diamond</h3>
+                    <p>Rotated square diamond</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-4" value="#96ceb4">
+                        <span class="toggle-label">#96ceb4</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Rounded Corners</h3>
+                    <p>Soft rounded rectangle</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-5" value="#feca57">
+                        <span class="toggle-label">#feca57</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Circle Border</h3>
+                    <p>Circle with white border</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-6" value="#ff9ff3">
+                        <span class="toggle-label">#ff9ff3</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Gradient Border</h3>
+                    <p>Colorful gradient border</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-7" value="#54a0ff">
+                        <span class="toggle-label">#54a0ff</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Triangle</h3>
+                    <p>Pointed triangle shape</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-8" value="#5f27cd">
+                        <span class="toggle-label">#5f27cd</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Star</h3>
+                    <p>Five-pointed star shape</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-9" value="#ff6348">
+                        <span class="toggle-label">#ff6348</span>
+                    </div>
+                </div>
+
+                <div class="control-item">
+                    <h3>Heart</h3>
+                    <p>Romantic heart shape</p>
+                    <div class="color-container">
+                        <input type="color" class="color-picker color-picker-10" value="#e84393">
+                        <span class="toggle-label">#e84393</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Slider functionality
+        document.querySelectorAll('.slider').forEach(slider => {
+            slider.addEventListener('input', function() {
+                const valueDisplay = this.parentElement.querySelector('.value-display');
+                valueDisplay.textContent = this.value;
+            });
+        });
+
+        // Toggle functionality
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+
+        // Color picker functionality
+        document.querySelectorAll('.color-picker').forEach(picker => {
+            picker.addEventListener('input', function() {
+                const label = this.parentElement.querySelector('.toggle-label');
+                label.textContent = this.value.toUpperCase();
+            });
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('.control-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html> 

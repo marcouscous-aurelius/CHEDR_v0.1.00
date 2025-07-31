@@ -2,40 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-height">
     <title>3D Artist Portfolio</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=18">
+    
+    <!-- Preload critical stylesheets to prevent FOUC -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="style.css?v=27" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Fallback for browsers that don't support preload -->
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="style.css?v=27">
+    </noscript>
+    
+    <!-- Prevent layout shift by hiding content until styles are loaded -->
+    <style>
+        /* Critical CSS to prevent FOUC */
+        body { 
+            visibility: hidden; 
+            opacity: 0; 
+            transition: opacity 0.1s ease-in;
+        }
+        body.styles-loaded { 
+            visibility: visible; 
+            opacity: 1; 
+        }
+        
+        /* Ensure canvas is positioned correctly from the start */
+        #threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        
+        /* Basic layout for critical elements */
+        .main-nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            pointer-events: auto;
+        }
+        
+        #toolbox-v2 {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
+    <div id="version-counter">Version 0.5</div>
     <nav class="main-nav">
         <div class="nav-container">
             <div class="nav-section">
                 <div class="logo-container">
                     <div class="logo-icon">🧀</div>
-                    <span class="logo-text">CHEDR</span>
+                    <span class="logo-text nav-text">CHEDR</span>
                 </div>
             </div>
             <div class="nav-section">
-                <a href="#docs">Docs</a>
+                <a href="#docs" class="nav-text">Docs</a>
             </div>
             <div class="nav-section">
-                <a href="#blog">Blog</a>
+                <a href="#blog" class="nav-text">Blog</a>
             </div>
             <div class="nav-section">
-                <a href="#contact">Contact</a>
+                <a href="#contact" class="nav-text">Contact</a>
             </div>
             <div class="nav-section">
-                <a href="#client-login">Client Login</a>
+                <a href="#client-login" class="nav-text">Client Login</a>
             </div>
         </div>
     </nav>
 
     <div id="toolbox-v2" class="toolbox-v2">
         <div class="toolbox-header">
-            <h3><i class="fas fa-sliders-h"></i> CONTROLS</h3>
-            <button id="toolbox-toggle-btn" class="toolbox-toggle-btn" aria-label="Toggle controls"><i class="fas fa-chevron-up"></i></button>
+            <div class="toolbox-button">
+                <i class="fas fa-sliders-h"></i>
+                <span class="nav-text">Toolbox</span>
+                <button id="toolbox-toggle-btn" class="toolbox-toggle-btn" aria-label="Toggle controls"><i class="fas fa-chevron-up"></i></button>
+            </div>
         </div>
         <div class="toolbox-content">
             <div class="toolbox-section">
@@ -43,6 +98,10 @@
                 <div class="control-row">
                     <label for="toggleInnerCubes-v2"><i class="far fa-eye"></i> Inner Cubes</label>
                     <input type="checkbox" id="toggleInnerCubes-v2" class="toggle-switch-v2" checked>
+                </div>
+                <div class="control-row">
+                    <label for="toggleFloor-v2"><i class="fas fa-square"></i> Floor</label>
+                    <input type="checkbox" id="toggleFloor-v2" class="toggle-switch-v2" checked>
                 </div>
                 <!-- New Cube Color Picker -->
                 <div class="control-row color-row">
@@ -57,6 +116,18 @@
             </div>
             <div class="toolbox-section">
                 <h4><i class="fas fa-mouse-pointer"></i> Interaction</h4>
+                <div class="control-row">
+                    <label for="toggleOrbitControls-v2"><i class="fas fa-compass"></i> Active</label>
+                    <input type="checkbox" id="toggleOrbitControls-v2" class="toggle-switch-v2">
+                </div>
+                <div class="control-row">
+                    <label for="togglePassiveOrbit-v2"><i class="fas fa-eye"></i> Passive</label>
+                    <input type="checkbox" id="togglePassiveOrbit-v2" class="toggle-switch-v2">
+                </div>
+                <div class="control-row slider-row">
+                    <label for="passiveOrbitStrengthSlider-v2"><i class="fas fa-compress-arrows-alt"></i> Strength <span id="passiveOrbitStrengthValue-v2" class="value-label">[0.10]</span></label>
+                    <input type="range" id="passiveOrbitStrengthSlider-v2" class="styled-slider" min="0.01" max="0.3" step="0.01" value="0.1">
+                </div>
                 <div class="control-row slider-row">
                     <label for="influenceSlider-v2"><i class="fas fa-circle-notch"></i> Influence <span id="influenceValue-v2" class="value-label">[88]</span></label>
                     <input type="range" id="influenceSlider-v2" class="styled-slider" min="60" max="160" value="88">
@@ -98,6 +169,26 @@
                     <input type="color" id="bgColorPicker-v2" value="#fafafa">
                 </div>
             </div>
+            <div class="toolbox-section">
+                <h4><i class="fas fa-bolt"></i> Lightning Effects</h4>
+                <div class="control-row">
+                    <label for="toggleLightning-v2"><i class="fas fa-bolt"></i> Lightning</label>
+                    <input type="checkbox" id="toggleLightning-v2" class="toggle-switch-v2" checked>
+                </div>
+                <div class="control-row slider-row">
+                    <label for="lightningStrengthSlider-v2"><i class="fas fa-fire"></i> Strength <span id="lightningStrengthValue-v2" class="value-label">[10.0]</span></label>
+                    <input type="range" id="lightningStrengthSlider-v2" class="styled-slider" min="0.1" max="300.0" step="0.1" value="10.0">
+                </div>
+                <div class="control-row color-row">
+                    <label for="lightningColorPicker-v2"><i class="fas fa-palette"></i> Lightning Color</label>
+                    <input type="color" id="lightningColorPicker-v2" value="#00ffff">
+                </div>
+                <div class="control-row slider-row">
+                    <label for="lightningFadeSlider-v2"><i class="fas fa-clock"></i> Fade Speed <span id="lightningFadeValue-v2" class="value-label">[0.05]</span></label>
+                    <input type="range" id="lightningFadeSlider-v2" class="styled-slider" min="0.01" max="0.2" step="0.01" value="0.05">
+                </div>
+            </div>
+
             <div class="toolbox-actions-v2">
                 <button id="setSettingsBtn-v2" class="toolbox-btn-v2"><i class="fas fa-save"></i> SET</button>
                 <button id="resetSettingsBtn-v2" class="toolbox-btn-v2"><i class="fas fa-undo"></i> RESET</button>
@@ -130,11 +221,50 @@
         {
             "imports": {
                 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-                "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js"
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
             }
         }
     </script>
-    <script type="module" src="script.js?v=18"></script>
+    
+    <!-- Handle stylesheet loading to prevent FOUC -->
+    <script>
+        // Track stylesheet loading
+        let stylesLoaded = 0;
+        const totalStyles = 2; // Font Awesome + style.css
+        
+        function checkStylesLoaded() {
+            stylesLoaded++;
+            if (stylesLoaded >= totalStyles) {
+                // All styles loaded, show the page
+                document.body.classList.add('styles-loaded');
+            }
+        }
+        
+        // Monitor stylesheet loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if stylesheets are already loaded
+            const fontAwesomeLink = document.querySelector('link[href*="font-awesome"]');
+            const styleLink = document.querySelector('link[href*="style.css"]');
+            
+            if (fontAwesomeLink && fontAwesomeLink.sheet) checkStylesLoaded();
+            if (styleLink && styleLink.sheet) checkStylesLoaded();
+            
+            // Fallback: show page after a short delay if styles don't load
+            setTimeout(() => {
+                if (!document.body.classList.contains('styles-loaded')) {
+                    document.body.classList.add('styles-loaded');
+                }
+            }, 1000);
+        });
+        
+        // Listen for stylesheet load events
+        document.addEventListener('load', function(e) {
+            if (e.target.tagName === 'LINK' && e.target.rel === 'stylesheet') {
+                checkStylesLoaded();
+            }
+        }, true);
+    </script>
+    
+    <script type="module" src="script.js?v=24"></script>
 </body>
 </html> 

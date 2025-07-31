@@ -1,3 +1,11 @@
+:root {
+    /* Stable viewport height to prevent jittery movement on mobile */
+    --vh: 1vh; /* Default fallback, will be overridden by JavaScript */
+    
+    /* Golden yellow color for consistent theming */
+    --golden-yellow: #ffd700;
+}
+
 *,
 *::before,
 *::after {
@@ -10,6 +18,18 @@ body {
     color: #333;
 }
 
+#version-counter {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 12px;
+    border-radius: 5px;
+    z-index: 1001;
+}
+
 /* Main Navigation Bar */
 .main-nav {
     position: fixed;
@@ -19,17 +39,19 @@ body {
     z-index: 1000;
     width: auto;
     max-width: 90vw;
+    pointer-events: auto;
 }
 
 .nav-container {
     display: flex;
-    background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
-    border: 1px solid #ddd;                    /* light grey border */
-    border-radius: 12px;                       /* more pronounced rounding */
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(221, 221, 221, 0.8);
+    border-radius: 12px;
     padding: 0;
     overflow: hidden;
     position: relative;
     backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .nav-section {
@@ -39,8 +61,10 @@ body {
     justify-content: center;
     padding: 16px 24px;
     min-width: 80px;
+    height: 60px;
     text-align: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .nav-section:not(:last-child)::after {
@@ -51,31 +75,115 @@ body {
     transform: translateY(-50%);
     width: 1px;
     height: 60%;
-    background-color: #e5e5e5;
+    background-color: rgba(229, 229, 229, 0.8);
 }
 
 .nav-section:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(248, 249, 250, 0.9);
+}
+
+.nav-text {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
 }
 
 .nav-section a {
-    text-decoration: none;
-    color: #000000;
-    font-weight: 500;
-    font-size: 14px;
-    letter-spacing: 0.02em;
-    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 .nav-section a:hover {
-    color: #333;
+    color: #333333;
+}
+
+/* Client Login Button - 33% darker than other navbar items */
+.nav-section a[href="#client-login"].nav-text {
+    color: #222222 !important; /* 33% darker than #333333 */
+}
+
+.nav-section a[href="#client-login"].nav-text:hover {
+    color: #222222 !important; /* Maintain the darker color on hover */
+}
+
+/* Client Login nav section - dark grey background at 33% opacity with subtle glow */
+.nav-section:has(a[href="#client-login"]) {
+    background-color: rgba(51, 51, 51, 0.33) !important; /* Dark grey at 33% opacity */
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4) !important; /* Initial glow state */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+}
+
+/* Client Login button hover - yellow background with white text and enhanced glow */
+.nav-section:has(a[href="#client-login"]):hover {
+    background-color: var(--golden-yellow) !important;
+    box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.6),
+        0 0 40px rgba(255, 215, 0, 0.3),
+        0 0 60px rgba(255, 215, 0, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+.nav-section:has(a[href="#client-login"]):hover .nav-text {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Pulsing glow animation for client login button */
+@keyframes clientLoginGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 0 0 rgba(255, 215, 0, 0.4),
+            0 0 0 0 rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 0 4px rgba(255, 215, 0, 0.2),
+            0 0 0 8px rgba(255, 215, 0, 0.1);
+    }
+}
+
+.nav-section:has(a[href="#client-login"]) {
+    animation: clientLoginGlow 3s ease-in-out infinite;
+}
+
+/* Pulsing glow animation for toolbox button */
+@keyframes toolboxGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 0 0 rgba(255, 215, 0, 0.4),
+            0 0 0 0 rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 0 4px rgba(255, 215, 0, 0.2),
+            0 0 0 8px rgba(255, 215, 0, 0.1);
+    }
 }
 
 /* Logo Section */
 .logo-container {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
 }
 
 .logo-icon {
@@ -89,10 +197,7 @@ body {
 }
 
 .logo-text {
-    font-weight: 600;
-    font-size: 16px;
-    color: #000000;
-    letter-spacing: 0.02em;
+    /* Uses .nav-text class for styling */
 }
 
 #threejs-container {
@@ -100,10 +205,10 @@ body {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     z-index: -1;
-    /* Touch improvements for mobile */
-    touch-action: none; /* Prevents default touch behaviors like scrolling */
+    /* Touch improvements for mobile - Allow scrolling by default, prevent when needed via JS */
+    touch-action: pan-y; /* Allow vertical scrolling by default */
     -webkit-touch-callout: none; /* Prevents callout on iOS */
     -webkit-user-select: none; /* Prevents text selection on iOS */
     -khtml-user-select: none; /* Prevents text selection on Konqueror */
@@ -111,10 +216,25 @@ body {
     -ms-user-select: none; /* Prevents text selection on IE/Edge */
     user-select: none; /* Prevents text selection */
     -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
+    /* Force its own compositor layer so Safari/iOS scroll remains silky */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Prevent any resize-related jitter */
+    will-change: transform;
+}
+
+/* Prevent rubber-band scrolling that can introduce visible jitter */
+html, body {
+    overscroll-behavior: contain;
+    /* Ensure stable viewport on mobile */
+    height: 100%;
+    overflow-x: hidden;
 }
 
 main {
-    padding-top: 100vh; /* Start content after the hero section */
+    padding-top: calc(var(--vh, 1vh) * 100); /* Start content after the hero section */
+    /* Ensure content doesn't shift when viewport changes */
+    min-height: calc(var(--vh, 1vh) * 100);
 }
 
 section {
@@ -176,7 +296,7 @@ h2 {
 }
 
 .toggle-checkbox:checked + .toggle-label .toggle-switch {
-    background-color: #ffd700; /* Cheese yellow for on state */
+    background-color: var(--golden-yellow); /* Cheese yellow for on state */
     box-shadow: inset 0 2px 4px rgba(255, 215, 0, 0.3);
 }
 
@@ -203,54 +323,89 @@ h2 {
 /* === Toolbox V2 === */
 .toolbox-v2 {
     position: fixed;
-    top: 0;
-    left: 0;
-    min-width: 320px;
-    max-width: 400px;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 370px;
     width: fit-content;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 1px solid #ddd;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(221, 221, 221, 0.8);
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     overflow: visible;
-    transition: background-color 0.3s ease-in-out;
+    transition: all 0.2s ease;
     will-change: transform;
     touch-action: none;
     user-select: none;
     backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
 }
 
 .toolbox-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(220, 220, 220, 0.7);
-    background-color: rgba(255, 255, 255, 0.5);
-    cursor: grab;
-    touch-action: none;
-    border-radius: 11px 11px 0 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(229, 229, 229, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 12px 12px 0 0;
     overflow: hidden;
 }
 
-.toolbox-header h3 {
-    margin: 0;
+.toolbox-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 24px;
+    min-width: 120px;
+    height: 60px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
+    animation: toolboxGlow 3s ease-in-out infinite;
+}
+
+.toolbox-button:hover {
+    background-color: var(--golden-yellow) !important;
+    box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.6),
+        0 0 40px rgba(255, 215, 0, 0.3),
+        0 0 60px rgba(255, 215, 0, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+.toolbox-button i {
     font-size: 14px;
-    font-weight: 600;
     color: #000000;
     display: flex;
     align-items: center;
-    gap: 8px;
-    letter-spacing: 0.02em;
+    transition: color 0.3s ease;
+}
+
+.toolbox-button span {
+    /* Uses .nav-text class for styling */
+    transition: color 0.3s ease;
+}
+
+.toolbox-button:hover i,
+.toolbox-button:hover span {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
 }
 
 .toolbox-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     width: 100%;
-    padding: 12px 0;
+    padding: 6px 0;
     border-bottom: 1px solid rgba(220, 220, 220, 0.4);
 }
 
@@ -260,28 +415,53 @@ h2 {
 
 .toolbox-section h4 {
     margin: 0;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 0 16px 8px;
+    padding: 0 10px 4px;
 }
 
 .toolbox-content {
-    padding: 4px 0 16px;
+    padding: 1px 0 10px;
     display: flex;
     flex-direction: column;
     gap: 0;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+/* Custom scrollbar for toolbox content */
+.toolbox-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toolbox-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.toolbox-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.toolbox-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .control-row {
     display: grid;
-    grid-template-columns: 110px 1fr;
+    grid-template-columns: 100px 1fr;
     align-items: center;
     gap: 8px;
-    min-height: 32px;
-    padding: 0 16px;
+    min-height: 28px;
+    padding: 0 12px;
     transition: background-color 0.2s ease;
 }
 
@@ -303,46 +483,58 @@ h2 {
 .control-row label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 6px;
+    font-size: 12px;
     color: #000000;
     white-space: nowrap;
     font-weight: 500;
     letter-spacing: 0.02em;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .control-row label i {
     color: #666;
-    width: 16px;
+    width: 14px;
     text-align: center;
-    font-size: 13px;
+    font-size: 11px;
+    flex-shrink: 0;
 }
 
 .value-label {
     color: #666;
-    font-size: 13px;
+    font-size: 11px;
     font-variant-numeric: tabular-nums;
     font-weight: normal;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 4px;
 }
 
 /* Toggle Switch */
 .toggle-switch-v2 {
     appearance: none;
-    width: 40px;
-    height: 22px;
+    width: 32px;
+    height: 18px;
     background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 11px;
+    border-radius: 9px;
     position: relative;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    justify-self: start;
+    align-self: center;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
 .toggle-switch-v2::before {
     content: '';
     position: absolute;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background-color: white;
     top: 2px;
@@ -352,11 +544,11 @@ h2 {
 }
 
 .toggle-switch-v2:checked {
-    background-color: #ffd700;
+    background-color: var(--golden-yellow);
 }
 
 .toggle-switch-v2:checked::before {
-    transform: translateX(18px);
+    transform: translateX(14px);
 }
 
 /* Slider */
@@ -371,6 +563,11 @@ h2 {
     cursor: pointer;
     transition: all 0.2s;
     margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 60px;
+    justify-self: start;
+    align-self: center;
 }
 
 .styled-slider::-webkit-slider-thumb {
@@ -378,7 +575,7 @@ h2 {
     appearance: none;
     width: 16px;
     height: 16px;
-    background: #ffd700;
+    background: var(--golden-yellow);
     cursor: pointer;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -388,7 +585,7 @@ h2 {
 .styled-slider::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    background: #ffd700;
+    background: var(--golden-yellow);
     cursor: pointer;
     border-radius: 50%;
     border: none;
@@ -407,14 +604,17 @@ h2 {
 /* Color picker */
 .color-row input[type="color"] {
     width: 100%; /* Make it fill the cell */
-    max-width: 48px; /* But not too wide */
-    height: 22px;
+    max-width: 40px; /* But not too wide */
+    height: 18px;
     padding: 0;
+    margin: 0;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border-radius: 3px;
     cursor: pointer;
     background: none;
     transition: all 0.2s;
+    justify-self: start;
+    align-self: center;
 }
 
 .color-row input[type="color"]:hover {
@@ -439,38 +639,38 @@ h2 {
 /* Action buttons */
 .toolbox-actions-v2 {
     display: flex;
-    gap: 12px;
-    padding: 16px;
+    gap: 8px;
+    padding: 10px;
     border-top: 1px solid rgba(220, 220, 220, 0.4);
 }
 
 .toolbox-btn-v2 {
     flex: 1;
-    padding: 8px;
+    padding: 5px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.7);
     color: #000000;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 11px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 5px;
     letter-spacing: 0.02em;
 }
 
 .toolbox-btn-v2:hover {
-    background-color: #ffd700;
-    border-color: #ffd700;
+    background-color: var(--golden-yellow);
+    border-color: var(--golden-yellow);
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .toolbox-btn-v2:active {
-    background-color: #ffed4a;
+    background-color: var(--golden-yellow);
     transform: translateY(0);
     box-shadow: none;
 } 
@@ -479,7 +679,7 @@ h2 {
 .spline-row {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
 }
 
@@ -495,8 +695,8 @@ h2 {
 
 .spline-canvas {
     width: 100%;
-    height: 120px;
-    border-radius: 6px;
+    height: 80px;
+    border-radius: 5px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 100%);
     border: 1px solid rgba(255, 255, 255, 0.2);
     cursor: crosshair;
@@ -507,18 +707,18 @@ h2 {
 
 .spline-controls {
     display: flex;
-    gap: 4px;
+    gap: 3px;
     justify-content: center;
 }
 
 .spline-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    padding: 6px 8px;
+    border-radius: 3px;
+    padding: 3px 5px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    font-size: 10px;
+    font-size: 8px;
     transition: all 0.2s ease;
     backdrop-filter: blur(10px);
 }
@@ -535,5 +735,55 @@ h2 {
 }
 
 .spline-btn i {
-    font-size: 10px;
+    font-size: 8px;
 } 
+
+/* Toolbox collapsed state */
+.toolbox-v2.collapsed .toolbox-content {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+}
+
+.toolbox-v2.collapsed .toolbox-actions-v2 {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.toolbox-v2.collapsed {
+    min-width: auto;
+    max-width: none;
+    width: auto;
+}
+
+.toolbox-v2.collapsed .toolbox-header {
+    border-bottom: none;
+    border-radius: 12px;
+}
+
+.toolbox-toggle-btn {
+    background: none;
+    border: none;
+    color: #666;
+    padding: 2px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+.toolbox-toggle-btn i {
+    transition: all 0.3s ease-in-out;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+ 
